@@ -1,1 +1,1 @@
-# my-expense-tracker-automation
+# Expense-Tracker-Automation

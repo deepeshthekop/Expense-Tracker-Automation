@@ -13,7 +13,11 @@ test.describe('Authentication Lifecycle', () => {
   });
 
   test('User can log in', async ({ page }) => {
-    await loginPage.login('test@xyz.com', 'Test@123');
+    // Read from environment variables securely
+    const email = process.env.TEST_USER_EMAIL!; // ! tells TypeScript: "Trust me, I guarantee this environment variable exists and will not be undefined."
+    const password = process.env.TEST_USER_PASSWORD!;
+
+    await loginPage.login(email, password);
     await expect(nav.logoLink).toBeVisible();
   });
 });

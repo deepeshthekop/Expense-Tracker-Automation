@@ -13,9 +13,20 @@ test.describe('Dashboard Operations', () => {
     nav = new NavComponent(page);
     dashboardPage = new DashboardPage(page);
 
-    // Seed/Authenticate state before starting functional metrics
+    // Login before starting functional testing
     await loginPage.navigateTo();
-    await loginPage.login('test@xyz.com', 'Test@123');
+    await loginPage.login(
+      process.env.TEST_USER_EMAIL!, 
+      process.env.TEST_USER_PASSWORD!);
+    await expect(page).toHaveURL(/main/);
+  });
+
+  test ('User can see navigation links', async ({ page }) => {
+    await nav.verifyNavLinksVisible();
+  });
+
+  test('User can view dashboard components', async ({ page }) => {
+    await dashboardPage.verifyDashboardComponentsVisible();
   });
 
   test('User can navigate sidebar sections smoothly', async ({ page }) => {
@@ -26,13 +37,6 @@ test.describe('Dashboard Operations', () => {
     await expect(page).toHaveURL(/.*budgets/);
 
     await nav.goToDashboard();
-    await expect(page).toHaveURL(/.*dashboard/);
-  });
-
-  test('Financial summary indicators display properly', async () => {
-    await expect(dashboardPage.totalBudgetCard).toBeVisible();
-    await expect(dashboardPage.totalRemainingCard).toBeVisible();
-    await expect(dashboardPage.totalSpendCard).toBeVisible();
-    await expect(dashboardPage.recentExpensesSection).toBeVisible();
+    await expect(page).toHaveURL(/main/);
   });
 });

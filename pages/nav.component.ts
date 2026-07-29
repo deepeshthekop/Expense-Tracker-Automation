@@ -20,7 +20,7 @@ export class NavComponent {
     // Refactored from brittle page.locator('img') to semantic layout roles
     this.userAvatarMenu = page.getByRole('button').filter({ hasText: /^$/ }).first(); // This line locates the user avatar menu button by finding a button element with no visible text (indicated by the regex /^$/) and selects the first occurrence. This approach is more robust than relying on specific image selectors, as it uses semantic roles to identify the element.
     this.signOutLink = page.getByRole('menuitem', { name: 'Sign Out' });
-    this.themeChanger = page.getByRole('button', { name: 'Toggle theme' }); // await page.getByRole('button').first();
+    this.themeChanger = page.getByTestId('theme-toggle');
   }
 
   async verifyNavLinksVisible() {
@@ -29,6 +29,7 @@ export class NavComponent {
     await expect(this.expensesLink).toBeVisible();
     await expect(this.budgetsLink).toBeVisible();
     await expect(this.userAvatarMenu).toBeVisible();
+    await expect(this.themeChanger).toBeVisible();
   }
 
   async goToHomepage() {

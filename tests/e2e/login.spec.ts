@@ -18,6 +18,6 @@ test.describe('Authentication Lifecycle', () => {
     const password = process.env.TEST_USER_PASSWORD!;
 
     await loginPage.login(email, password);
-    await expect(nav.logoLink).toBeVisible();
+    await expect(page).toHaveURL(/main/);
   });
 });

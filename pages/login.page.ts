@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test'; // The import statement is used to bring in the Page and Locator from the Playwright testing library, which are used to interact with web pages and locate elements.
+import { Page, Locator } from '@playwright/test'; // The import statement is used to bring in the Page and Locator from the Playwright testing library, which are used to interact with web pages and locate elements.
 
 export class LoginPage { // The export keyword is used to make the class available for import in other files
   private readonly page: Page; //  This line declares a private property named page of type Page. This property will hold a reference to the Playwright Page object, which represents a single tab or window in the browser. The readonly modifier indicates that this property can only be assigned once, typically in the constructor, and cannot be modified afterward.
@@ -6,7 +6,6 @@ export class LoginPage { // The export keyword is used to make the class availab
   private readonly emailInput: Locator;
   private readonly passwordInput: Locator;
   private readonly signInButton: Locator;
-  readonly marketingText: Locator; // This line declares a public property named marketingText of type Locator. This property will hold a reference to a specific element on the page that contains marketing text. Unlike the other properties, this one is not marked as private, meaning it can be accessed from outside the class.
 
   constructor(page: Page) { // The constructor is a special method that is called when a new instance of the class is created. It takes a single parameter, page, which is expected to be an instance of the Page class from Playwright. This parameter is used to initialize the page property of the class.
     this.page = page; // This line assigns the page parameter passed to the constructor to the private property page of the class. This allows the class to use the Page object for interacting with the web page throughout its methods.
@@ -14,7 +13,6 @@ export class LoginPage { // The export keyword is used to make the class availab
     this.emailInput = page.getByRole('textbox', { name: 'Email' });
     this.passwordInput = page.getByRole('textbox', { name: 'Password' });
     this.signInButton = page.getByRole('button', { name: 'Sign In' });
-    this.marketingText = page.getByText('Where attention goes, energy');
   }
 
   async navigateTo() {
@@ -29,6 +27,5 @@ export class LoginPage { // The export keyword is used to make the class availab
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.signInButton.click();
-    await expect(this.page).toHaveURL(/main/); // This line uses the expect function from Playwright's testing library to assert that the current URL of the page matches the regular expression /main/. The await keyword is used to wait for this assertion to be evaluated, ensuring that the test only proceeds if the URL is as expected after the login process.
   }
 }

@@ -18,7 +18,7 @@ export class NavComponent {
     this.expensesLink = page.getByRole('link', { name: 'Expenses' });
     this.budgetsLink = page.getByRole('link', { name: 'Budgets' });
     // Refactored from brittle page.locator('img') to semantic layout roles
-    this.userAvatarMenu = page.getByRole('button').filter({ hasText: /^$/ }).first(); // This line locates the user avatar menu button by finding a button element with no visible text (indicated by the regex /^$/) and selects the first occurrence. This approach is more robust than relying on specific image selectors, as it uses semantic roles to identify the element.
+    this.userAvatarMenu = page.getByTestId('user-menu-dropdown');
     this.signOutLink = page.getByRole('menuitem', { name: 'Sign Out' });
     this.themeChanger = page.getByTestId('theme-toggle');
   }

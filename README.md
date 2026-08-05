@@ -44,6 +44,7 @@ Expense-Tracker-Automation/
 ├── playwright.config.ts                # Playwright configuration
 ├── package.json                        # Dependencies and project metadata
 └── README.md
+```
 
 ---
 

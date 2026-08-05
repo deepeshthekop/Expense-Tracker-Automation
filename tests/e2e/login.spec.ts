@@ -3,8 +3,9 @@ import { LoginPage } from '../../pages/login.page'; // The import statement is u
 
 test.describe('Login Functionality', () => {
   let loginPage: LoginPage; // This line declares a variable named loginPage of type LoginPage. The let keyword allows the variable to be reassigned later. This variable will hold an instance of the LoginPage class, which provides methods for interacting with the login page of the application.
-  
-  test.beforeEach(async ({ page }) => { // { page } provides a fresh, isolated browser tab/context for each test run to ensure tests don't leak state into each other.
+
+  test.beforeEach(async ({ page }) => {
+    // { page } provides a fresh, isolated browser tab/context for each test run to ensure tests don't leak state into each other.
     loginPage = new LoginPage(page); // This line creates a new instance of the LoginPage class, passing the page object as an argument to its constructor. The resulting instance is assigned to the loginPage variable, allowing the test to use its methods to interact with the login page.
     await loginPage.navigateTo();
   });

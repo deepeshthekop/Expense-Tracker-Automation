@@ -273,17 +273,20 @@ npx playwright test --update-snapshots
 ## Troubleshooting
 
 ### Browser executable issues
+
 ```bash
 npx playwright install
 ```
 
 ### Flaky tests
+
 - Improve selector strategy
 - Avoid `waitForTimeout`
 - Prefer built-in Playwright waiting and assertions
 - Use traces/videos/screenshots for root-cause analysis
 
 ### Environment mismatch
+
 - Validate `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` values
 - Confirm target environment is reachable
 - Confirm `.env` values are loaded in test runtime

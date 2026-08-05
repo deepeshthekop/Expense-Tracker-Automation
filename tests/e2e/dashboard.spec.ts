@@ -15,17 +15,15 @@ test.describe('Dashboard Operations', () => {
 
     // Login before starting functional testing
     await loginPage.navigateTo();
-    await loginPage.login(
-      process.env.TEST_USER_EMAIL!, 
-      process.env.TEST_USER_PASSWORD!);
+    await loginPage.login(process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
     await expect(page).toHaveURL(/main/);
   });
 
-  test ('User can see navigation links', async ({ page }) => {
+  test('User can see navigation links', async ({}) => {
     await nav.verifyNavLinksVisible();
   });
 
-  test('User can view dashboard components', async ({ page }) => {
+  test('User can view dashboard components', async ({}) => {
     await dashboardPage.verifyDashboardComponentsVisible();
   });
 

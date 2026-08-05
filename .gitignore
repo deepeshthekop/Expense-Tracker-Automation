@@ -1,9 +1,32 @@
 
-# Playwright
+# Dependencies
 node_modules/
+.pnpm-store/
+
+#Playwright test artifacts and reports
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Stored auth state and session data
 /playwright/.auth/
+.auth/
+*.config.json.user
+
+# Environment variables and secrets
 .env
+.env.local
+.env.*.local
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+#ESLint and build outputs
+.eslintcache
+dist/
+build/

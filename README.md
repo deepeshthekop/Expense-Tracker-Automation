@@ -45,6 +45,9 @@ Expense-Tracker-Automation/
 ├── playwright.config.ts               # Playwright configuration
 ├── package.json                       # Dependencies and project metadata
 ├── eslint.config.mjs                  # ESLint configuration
+├── .prettierrc                        # Prettier configuration
+├── .prettierignore                    # Prettier ignore file
+├── .gitignore                         # Git ignore file
 └── README.md
 ```
 
@@ -103,6 +106,10 @@ ESLint is already configured in this project to enforce consistent code style. T
 npx husky install
 ```
 
+### 7) Set up Prettier for Code Formatting
+
+Prettier is already configured in this project to enforce consistent code formatting. The configuration file is located at `.prettierrc`.
+
 ---
 
 ## Configuration
@@ -141,6 +148,26 @@ Fix linting issues automatically:
 ```bash
 npm run lint:fix
 ```
+
+### Code Formatting with Prettier
+
+This project uses **Prettier** to enforce consistent code formatting. The configuration file is located at `.prettierrc`, and ignored files are listed in `.prettierignore`.
+
+#### Run Prettier
+
+To check for formatting issues:
+
+```bash
+npm run format: check .
+```
+
+To fix formatting issues:
+
+```bash
+npx prettier format .
+```
+
+> Prettier is also integrated with Husky, so staged code, config files and docs will be checked for formatting issues before every commit.
 
 ### Pre-commit Hooks with Husky
 
@@ -267,6 +294,7 @@ npx playwright test --update-snapshots
 - CI-ready test execution and reporting
 - Code linting with ESLint
 - Pre-commit hooks with Husky
+- Code formatting with Prettier
 
 ---
 
@@ -298,6 +326,13 @@ If pre-commit hooks are not running:
 
 1. Ensure Husky is installed: `npx husky install`.
 2. Verify the `pre-commit` file exists in `.husky/`.
+
+### Prettier Issues
+
+If Prettier is not running as part of the pre-commit hook:
+
+1. Ensure Husky is installed: `npx husky install`.
+2. Verify the `pre-commit` file in `.husky/` includes a Prettier check.
 
 ---
 

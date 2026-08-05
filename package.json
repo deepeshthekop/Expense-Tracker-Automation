@@ -15,6 +15,13 @@
     "*.ts": [
       "eslint",
       "prettier --check"
+    ],
+    "*.js": [
+      "eslint",
+      "prettier --check"
+    ],
+    "*{.json,md,mjs}": [
+      "prettier --check"
     ]
   },
   "keywords": [],

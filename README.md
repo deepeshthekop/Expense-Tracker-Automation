@@ -295,7 +295,6 @@ If pre-commit hooks are not running:
 
 1. Ensure Husky is installed: `npx husky install`.
 2. Verify the `pre-commit` file exists in `.husky/`.
-3. Check if the hook is executable: `chmod +x .husky/pre-commit`.
 
 ---
 

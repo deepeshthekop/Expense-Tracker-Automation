@@ -33,16 +33,18 @@ The framework is designed to be scalable and maintainable through a separation o
 ```text
 Expense-Tracker-Automation/
 ├── .github/workflows/playwright.yml   # CI workflow
-├── pages/                              # Page Objects and UI components
+├── .husky/                            # Git hooks managed by Husky
+├── pages/                             # Page Objects and UI components
 │   ├── dashboard.page.ts
 │   ├── login.page.ts
 │   └── nav.component.ts
-├── tests/e2e/                          # End-to-end test specs
+├── tests/e2e/                         # End-to-end test specs
 │   ├── dashboard.spec.ts
 │   ├── login.spec.ts
 │   └── logout.spec.ts
-├── playwright.config.ts                # Playwright configuration
-├── package.json                        # Dependencies and project metadata
+├── playwright.config.ts               # Playwright configuration
+├── package.json                       # Dependencies and project metadata
+├── eslint.config.mjs                  # ESLint configuration
 └── README.md
 ```
 
@@ -91,6 +93,16 @@ npx playwright install
 npx playwright install-deps
 ```
 
+### 5) Set up ESLint for Code Linting
+
+ESLint is already configured in this project to enforce consistent code style. The configuration file is located at `eslint.config.mjs`.
+
+### 6) Install Husky Git Hooks
+
+```bash
+npx husky install
+```
+
 ---
 
 ## Configuration
@@ -107,6 +119,32 @@ The Playwright `baseURL` is currently set directly in `playwright.config.ts`.
 If you want the environment-based URLs (for local/staging/prod), update `playwright.config.ts` to read from environment variables.
 
 > Never commit real secrets. Add `.env` to `.gitignore`. Use tools like `dotenv` or `GitHub Actions secrets` for secure management.
+
+---
+
+## Code Quality
+
+This project uses **ESLint** for code linting and **Husky** for managing Git hooks.
+
+### Linting with ESLint
+
+ESLint is configured to enforce consistent code style and catch potential issues. The configuration file is located at `eslint.config.mjs`.
+
+Run the linter:
+
+```bash
+npm run lint
+```
+
+Fix linting issues automatically:
+
+```bash
+npm run lint:fix
+```
+
+### Pre-commit Hooks with Husky
+
+Husky is used to enforce pre-commit checks. The `pre-commit` hook runs ESLint to ensure code quality before commits are made.
 
 ---
 
@@ -227,6 +265,8 @@ npx playwright test --update-snapshots
 - Minimal hard waits
 - Clear, behavior-driven test naming
 - CI-ready test execution and reporting
+- Code linting with ESLint
+- Pre-commit hooks with Husky
 
 ---
 
@@ -248,6 +288,14 @@ npx playwright install
 - Confirm target environment is reachable
 - Confirm `.env` values are loaded in test runtime
 - Re-check any test account constraints in the app
+
+### Husky Hook Issues
+
+If pre-commit hooks are not running:
+
+1. Ensure Husky is installed: `npx husky install`.
+2. Verify the `pre-commit` file exists in `.husky/`.
+3. Check if the hook is executable: `chmod +x .husky/pre-commit`.
 
 ---
 

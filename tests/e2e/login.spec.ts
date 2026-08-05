@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'; // The import statement is used
 import { LoginPage } from '../../pages/login.page'; // The import statement is used to bring in the LoginPage class from the specified file path. This allows the test file to create instances of the LoginPage class and use its methods to interact with the login page of the application.
 import { NavComponent } from '../../pages/nav.component';
 
-test.describe('Authentication Lifecycle', () => {
+test.describe('Login Functionality', () => {
   let loginPage: LoginPage; // This line declares a variable named loginPage of type LoginPage. The let keyword allows the variable to be reassigned later. This variable will hold an instance of the LoginPage class, which provides methods for interacting with the login page of the application.
   let nav: NavComponent; // This line declares a variable named nav of type NavComponent. Similar to the loginPage variable, this variable will hold an instance of the NavComponent class, which provides methods for interacting with the navigation component of the application.
 

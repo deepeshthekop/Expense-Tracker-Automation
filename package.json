@@ -12,11 +12,11 @@
     "prepare": "husky"
   },
   "lint-staged": {
-  "*.ts": [
-    "eslint",
-    "prettier --check"
-  ]
-},
+    "*.ts": [
+      "eslint",
+      "prettier --check"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

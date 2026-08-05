@@ -1,9 +1,25 @@
 
-# Playwright
+# Dependencies
 node_modules/
+
+#Playwright test artifacts and reports
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Stored auth state and session data
 /playwright/.auth/
+.auth/
+
+# Environment variables and secrets
 .env
+
+# OS and IDE files
+.DS_Store
+.vscode/*
+
+#ESLint and build outputs
+.eslintcache
+dist/
+build/

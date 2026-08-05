@@ -37,9 +37,9 @@ The framework is designed to be scalable and maintainable through separation of 
 
 Typical workflows covered:
 
-- Authentication/login
-- Adding/editing/deleting expenses
-- Transaction validation
+- Authentication/login/logout
+- Dashboard navigation and summary checks
+- Adding/editing/deleting budgets and expenses
 - UI behavior and regression checks
 
 ---
@@ -296,7 +296,7 @@ npx playwright test --update-snapshots
 
 ## Troubleshooting
 
-### `Executable doesn't exist` / browser issues
+### Executable doesn't exist / browser issues
 ```bash
 npx playwright install
 ```

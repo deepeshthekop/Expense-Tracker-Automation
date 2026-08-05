@@ -21,11 +21,11 @@ test.describe('Dashboard Operations', () => {
     await expect(page).toHaveURL(/main/);
   });
 
-  test ('User can see navigation links', async ({ page }) => {
+  test ('User can see navigation links', async ({ }) => {
     await nav.verifyNavLinksVisible();
   });
 
-  test('User can view dashboard components', async ({ page }) => {
+  test('User can view dashboard components', async ({ }) => {
     await dashboardPage.verifyDashboardComponentsVisible();
   });
 

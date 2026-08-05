@@ -8,39 +8,14 @@ Automated UI test framework for an Expense Tracker web application using **Playw
 
 ---
 
-## 📚 Table of Contents
-
-- [About the Project](#about-the-project)
-- [Tech Stack](#tech-stack)
-- [Framework Structure](#framework-structure)
-- [Prerequisites](#prerequisites)
-- [Setup Instructions](#setup-instructions)
-- [Environment Variables](#environment-variables)
-- [Running Tests Locally](#running-tests-locally)
-- [Test Reports](#test-reports)
-- [CI with GitHub Actions](#ci-with-github-actions)
-- [Useful Commands](#useful-commands)
-- [Best Practices Followed](#best-practices-followed)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-
----
-
 ## About the Project
 
-This repository contains end-to-end automation tests for an expense tracker web app.  
+This repository contains end-to-end automation tests for an Expense Tracker web app.  
 The framework is designed to be scalable and maintainable through separation of concerns:
 
 - Test scenarios in spec files
 - Page behavior in Page Objects
-- Shared helpers/utilities for reuse
-
-Typical workflows covered:
-
-- Authentication/login/logout
-- Dashboard navigation and summary checks
-- Adding/editing/deleting budgets and expenses
-- UI behavior and regression checks
+- Reusable components for shared UI interactions
 
 ---
 
@@ -55,26 +30,20 @@ Typical workflows covered:
 
 ## Framework Structure
 
-> Folder names can vary slightly based on your current implementation.
-
 ```text
 Expense-Tracker-Automation/
-├── tests/                     # Test specifications (business flows)
-├── pages/                     # Page Objects (locators + actions)
-├── utils/ or fixtures/        # Reusable helpers, test data, fixtures
-├── playwright.config.ts       # Global Playwright config
-├── package.json               # Scripts + dependencies
-├── tsconfig.json              # TypeScript configuration
-├── .env.example               # Example env variables
+├── .github/workflows/playwright.yml   # CI workflow
+├── pages/                              # Page Objects and UI components
+│   ├── dashboard.page.ts
+│   ├── login.page.ts
+│   └── nav.component.ts
+├── tests/e2e/                          # End-to-end test specs
+│   ├── dashboard.spec.ts
+│   ├── login.spec.ts
+│   └── logout.spec.ts
+├── playwright.config.ts                # Playwright configuration
+├── package.json                        # Dependencies and project metadata
 └── README.md
-```
-
-### Structure Philosophy
-
-- **tests/** keeps assertions and scenarios readable
-- **pages/** centralizes selectors and page interactions
-- **utils/fixtures/** avoids duplication
-- **config** controls retries, reporters, parallelism, and environments
 
 ---
 
@@ -123,24 +92,18 @@ npx playwright install-deps
 
 ---
 
-## Environment Variables
+## Configuration
 
-Create a `.env` file in the project root (or use your preferred environment setup).
+Environment variables currently used by tests/CI:
 
-Example `.env.example`:
+- `TEST_USER_EMAIL`
+- `TEST_USER_PASSWORD`
 
-```env
-# Application base URL
-BASE_URL=https://your-expense-tracker-url.com
+The Playwright `baseURL` is currently set directly in `playwright.config.ts`.
 
-# Test user credentials (example names - adapt to your app)
-TEST_USER_EMAIL=testuser@example.com
-TEST_USER_PASSWORD=your_password_here
+- `https://my-expense-tracker-beta.vercel.app/`
 
-# Optional: API endpoints / tokens if your tests need them
-# API_BASE_URL=https://api.your-app.com
-# API_TOKEN=your_token_here
-```
+If you want environment-based URLs (for local/staging/prod), update `playwright.config.ts` to read from environment variables.
 
 > Never commit real secrets. Add `.env` to `.gitignore`.
 
@@ -205,63 +168,35 @@ npx playwright test --debug
 
 ## CI with GitHub Actions
 
-If not already present, create this workflow file:
+CI is already configured in:
 
-```yaml
-# .github/workflows/playwright.yml
-name: Playwright Tests
+- `.github/workflows/playwright.yml`
 
-on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+Current workflow behavior:
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+- Runs on push and pull request to `main` and `master`
+- Uses `actions/setup-node@v4` with `node-version: lts/*`
+- Installs dependencies with `npm ci`
+- Installs Playwright browsers with dependencies
+- Runs `npx playwright test`
+- Uploads Playwright HTML report artifact (`retention-days: 30`)
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+Required GitHub secrets for CI:
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Run Playwright tests
-        run: npx playwright test
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-
-      - name: Upload Playwright report (always)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
-```
-
-### Configure repository secrets
-
-In GitHub: **Repo → Settings → Secrets and variables → Actions → New repository secret**
-
-Add (as needed):
-
-- `BASE_URL`
 - `TEST_USER_EMAIL`
 - `TEST_USER_PASSWORD`
+
+---
+
+## Current Test Coverage
+
+The current E2E suite includes:
+
+- Login flow
+- Logout flow
+- Dashboard validation flow
+
+As the suite grows, add additional coverage for expense and budget workflows.
 
 ---
 
@@ -296,7 +231,7 @@ npx playwright test --update-snapshots
 
 ## Troubleshooting
 
-### Executable doesn't exist / browser issues
+### Browser executable issues
 ```bash
 npx playwright install
 ```
@@ -308,9 +243,10 @@ npx playwright install
 - Use traces/videos/screenshots for root-cause analysis
 
 ### Environment mismatch
-- Validate `BASE_URL` and credentials
+- Validate `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` values
 - Confirm target environment is reachable
 - Confirm `.env` values are loaded in test runtime
+- Re-check any test account constraints in the app
 
 ---
 

@@ -4,14 +4,14 @@
 [![TypeScript](https://img.shields.io/badge/language-typescript-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-Automated UI test framework for an Expense Tracker web application using **Playwright**, **TypeScript**, and the **Page Object Model (POM)** pattern.
+Automated UI testing framework for an Expense Tracker web application using **Playwright**, **TypeScript**, and the **Page Object Model (POM)** pattern.
 
 ---
 
 ## About the Project
 
 This repository contains end-to-end automation tests for an Expense Tracker web app.  
-The framework is designed to be scalable and maintainable through separation of concerns:
+The framework is designed to be scalable and maintainable through a separation of concerns:
 
 - Test scenarios in spec files
 - Page behavior in Page Objects
@@ -104,9 +104,9 @@ The Playwright `baseURL` is currently set directly in `playwright.config.ts`.
 
 - `https://my-expense-tracker-beta.vercel.app/`
 
-If you want environment-based URLs (for local/staging/prod), update `playwright.config.ts` to read from environment variables.
+If you want the environment-based URLs (for local/staging/prod), update `playwright.config.ts` to read from environment variables.
 
-> Never commit real secrets. Add `.env` to `.gitignore`.
+> Never commit real secrets. Add `.env` to `.gitignore`. Use tools like `dotenv` or `GitHub Actions secrets` for secure management.
 
 ---
 

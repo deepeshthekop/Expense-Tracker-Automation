@@ -173,13 +173,13 @@ This project uses **Prettier** to enforce consistent code formatting. The config
 To check for formatting issues:
 
 ```bash
-npm run format: check .
+npm run format:check
 ```
 
 To fix formatting issues:
 
 ```bash
-npx prettier format .
+npm run format
 ```
 
 > Prettier is also integrated with Husky, so staged code, config files and docs will be checked for formatting issues before every commit.
@@ -213,7 +213,7 @@ npx playwright test --ui
 ### Run a specific spec file
 
 ```bash
-npx playwright test tests/<file-name>.spec.ts
+npx playwright test tests/e2e/<file-name>.spec.ts
 ```
 
 ### Run tests matching a title

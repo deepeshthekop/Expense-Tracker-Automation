@@ -141,22 +141,6 @@ Instead of running a full UI login before every test, this framework uses Playwr
 
 ---
 
-## Authentication Architecture
-
-[auth.setup.ts] ---> Performs UI Login ---> Saves state to .auth/user.json
-|
-v
-[ chromium ] ---> Auto-injects user.json ---> Runs e2e specs pre-authenticated
-
-### How Navigation Works in Tests
-
-Because browser workers launch pre-authenticated via `storageState`, tests do not need to fill credentials:
-
-- **Authenticated Specs (Logout, Dashboard, Expenses):** Call `await nav.navigateTo()` inside `beforeEach` (or within the spec) to land on protected routes (`/main`) directly.
-- **Unauthenticated Specs (Login Validations):** Override session state per-file using `test.use({ storageState: { cookies: [], origins: [] } })` to start with a clean browser.
-
----
-
 ## Code Quality
 
 This project uses **ESLint** for code linting and **Husky** for managing Git hooks.

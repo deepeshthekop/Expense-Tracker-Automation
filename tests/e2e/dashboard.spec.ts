@@ -1,22 +1,16 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../pages/login.page';
 import { NavComponent } from '../../pages/nav.component';
 import { DashboardPage } from '../../pages/dashboard.page';
 
 test.describe('Dashboard Operations', () => {
-  let loginPage: LoginPage;
   let nav: NavComponent;
   let dashboardPage: DashboardPage;
 
   test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
     nav = new NavComponent(page);
     dashboardPage = new DashboardPage(page);
 
-    // Login before starting functional testing
-    await loginPage.navigateTo();
-    await loginPage.login(process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
-    await expect(page).toHaveURL(/main/);
+    await nav.navigateToHome();
   });
 
   test('User can see navigation links', async ({}) => {

@@ -61,4 +61,8 @@ export class NavComponent {
     await this.userAvatarMenu.click();
     await this.signOutLink.click();
   }
+
+  async navigateToHome() {
+    await this.page.goto('/main');
+  }
 }

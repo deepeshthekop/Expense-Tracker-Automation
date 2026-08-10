@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test'; // The import statement is used to bring in the Page and Locator from the Playwright testing library, which are used to interact with web pages and locate elements.
+import { test, Page, Locator } from '@playwright/test'; // The import statement is used to bring in the Page and Locator from the Playwright testing library, which are used to interact with web pages and locate elements.
 
 export class LoginPage {
   // The export keyword is used to make the class available for import in other files
@@ -17,7 +17,7 @@ export class LoginPage {
     this.signInButton = page.getByRole('button', { name: 'Sign In' });
   }
 
-  async navigateTo() {
+  async navigateToLogin() {
     await this.page.goto('/'); // This line uses the goto method of the Page object to navigate to the root URL ('/') of the web application. The await keyword is used to pause the execution of the function until the navigation is complete, ensuring that subsequent actions are performed on the correct page.
   }
 
@@ -28,7 +28,15 @@ export class LoginPage {
       await this.loginLandingButton.click();
     }
     await this.emailInput.fill(email);
-    await this.passwordInput.fill(password);
+
+    await test.step(
+      'Enter password',
+      async () => {
+        await this.passwordInput.fill(password);
+      },
+      { box: true }
+    );
+
     await this.signInButton.click();
   }
 }

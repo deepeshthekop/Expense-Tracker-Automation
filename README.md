@@ -30,18 +30,22 @@ The framework is designed to be scalable and maintainable through a separation o
 
 ## Framework Structure
 
-```text
+```
 Expense-Tracker-Automation/
+├── .auth/                             # Auto-generated session state (ignored by git)
+│   └── user.json                      # Injected cookies & localStorage state
 ├── .github/workflows/playwright.yml   # CI workflow
 ├── .husky/                            # Git hooks managed by Husky
 ├── pages/                             # Page Objects and UI components
 │   ├── dashboard.page.ts
 │   ├── login.page.ts
 │   └── nav.component.ts
-├── tests/e2e/                         # End-to-end test specs
-│   ├── dashboard.spec.ts
-│   ├── login.spec.ts
-│   └── logout.spec.ts
+├── tests/                             # Test specs and setup scripts
+│   ├── auth.setup.ts                  # One-time login setup project script
+│   └── e2e/                           # End-to-end test specs
+│       ├── dashboard.spec.ts
+│       ├── login.spec.ts
+│       └── logout.spec.ts
 ├── playwright.config.ts               # Playwright configuration
 ├── package.json                       # Dependencies and project metadata
 ├── eslint.config.mjs                  # ESLint configuration
@@ -114,18 +118,42 @@ Prettier is already configured in this project to enforce consistent code format
 
 ## Configuration
 
-Environment variables currently used by tests/CI:
+### Environment Variables
+
+Required environment variables in your `.env` file (at project root):
 
 - `TEST_USER_EMAIL`
 - `TEST_USER_PASSWORD`
 
-The Playwright `baseURL` is currently set directly in `playwright.config.ts`.
+### Base URL & Global Authentication (`storageState`)
 
-- `https://my-expense-tracker-beta.vercel.app/`
+The Playwright `baseURL` is configured in `playwright.config.ts`:
 
-If you want the environment-based URLs (for local/staging/prod), update `playwright.config.ts` to read from environment variables.
+- `https://my-expense-tracker-beta.vercel.app`
 
-> Never commit real secrets. Add `.env` to `.gitignore`. Use tools like `dotenv` or `GitHub Actions secrets` for secure management.
+Instead of running a full UI login before every test, this framework uses Playwright's **Setup Dependencies** and `storageState`:
+
+1. The `setup` project runs `tests/auth.setup.ts` before any browser tests.
+2. It performs UI login once using environment variables and exports the session context to `.auth/user.json`.
+3. Test projects (e.g., `chromium`) automatically inherit `.auth/user.json` to launch pre-authenticated browser instances.
+
+> **Security Note:** Session files contain sensitive live tokens. `.auth/` and `.env` are listed in `.gitignore` and should never be committed to source control.
+
+---
+
+## Authentication Architecture
+
+[auth.setup.ts] ---> Performs UI Login ---> Saves state to .auth/user.json
+|
+v
+[ chromium ] ---> Auto-injects user.json ---> Runs e2e specs pre-authenticated
+
+### How Navigation Works in Tests
+
+Because browser workers launch pre-authenticated via `storageState`, tests do not need to fill credentials:
+
+- **Authenticated Specs (Logout, Dashboard, Expenses):** Call `await nav.navigateTo()` inside `beforeEach` (or within the spec) to land on protected routes (`/main`) directly.
+- **Unauthenticated Specs (Login Validations):** Override session state per-file using `test.use({ storageState: { cookies: [], origins: [] } })` to start with a clean browser.
 
 ---
 

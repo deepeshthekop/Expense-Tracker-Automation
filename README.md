@@ -16,6 +16,9 @@ The framework is designed to be scalable and maintainable through a separation o
 - Test scenarios in spec files
 - Page behavior in Page Objects
 - Reusable components for shared UI interactions
+- Authentication state management for faster test execution
+- ESLint and Prettier for code quality and formatting
+- Husky for pre-commit hooks and Git workflow enforcement
 
 ---
 
@@ -307,6 +310,8 @@ npx playwright test --update-snapshots
 - Code linting with ESLint
 - Pre-commit hooks with Husky
 - Code formatting with Prettier
+- Environment variable management with `.env` and `dotenv`
+- Authentication state management with `storageState` and `.auth/`
 
 ---
 

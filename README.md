@@ -16,6 +16,9 @@ The framework is designed to be scalable and maintainable through a separation o
 - Test scenarios in spec files
 - Page behavior in Page Objects
 - Reusable components for shared UI interactions
+- Authentication state management for faster test execution
+- ESLint and Prettier for code quality and formatting
+- Husky for pre-commit hooks and Git workflow enforcement
 
 ---
 
@@ -30,18 +33,22 @@ The framework is designed to be scalable and maintainable through a separation o
 
 ## Framework Structure
 
-```text
+```
 Expense-Tracker-Automation/
+├── .auth/                             # Auto-generated session state (ignored by git)
+│   └── user.json                      # Injected cookies & localStorage state
 ├── .github/workflows/playwright.yml   # CI workflow
 ├── .husky/                            # Git hooks managed by Husky
 ├── pages/                             # Page Objects and UI components
 │   ├── dashboard.page.ts
 │   ├── login.page.ts
 │   └── nav.component.ts
-├── tests/e2e/                         # End-to-end test specs
-│   ├── dashboard.spec.ts
-│   ├── login.spec.ts
-│   └── logout.spec.ts
+├── tests/                             # Test specs and setup scripts
+│   ├── auth.setup.ts                  # One-time login setup project script
+│   └── e2e/                           # End-to-end test specs
+│       ├── dashboard.spec.ts
+│       ├── login.spec.ts
+│       └── logout.spec.ts
 ├── playwright.config.ts               # Playwright configuration
 ├── package.json                       # Dependencies and project metadata
 ├── eslint.config.mjs                  # ESLint configuration
@@ -114,18 +121,26 @@ Prettier is already configured in this project to enforce consistent code format
 
 ## Configuration
 
-Environment variables currently used by tests/CI:
+### Environment Variables
+
+Required environment variables in your `.env` file (at project root):
 
 - `TEST_USER_EMAIL`
 - `TEST_USER_PASSWORD`
 
-The Playwright `baseURL` is currently set directly in `playwright.config.ts`.
+### Base URL & Global Authentication (`storageState`)
 
-- `https://my-expense-tracker-beta.vercel.app/`
+The Playwright `baseURL` is configured in `playwright.config.ts`:
 
-If you want the environment-based URLs (for local/staging/prod), update `playwright.config.ts` to read from environment variables.
+- `https://my-expense-tracker-beta.vercel.app`
 
-> Never commit real secrets. Add `.env` to `.gitignore`. Use tools like `dotenv` or `GitHub Actions secrets` for secure management.
+Instead of running a full UI login before every test, this framework uses Playwright's **Setup Dependencies** and `storageState`:
+
+1. The `setup` project runs `tests/auth.setup.ts` before any browser tests.
+2. It performs UI login once using environment variables and exports the session context to `.auth/user.json`.
+3. Test projects (e.g., `chromium`) automatically inherit `.auth/user.json` to launch pre-authenticated browser instances.
+
+> **Security Note:** Session files contain sensitive live tokens. `.auth/` and `.env` are listed in `.gitignore` and should never be committed to source control.
 
 ---
 
@@ -158,13 +173,13 @@ This project uses **Prettier** to enforce consistent code formatting. The config
 To check for formatting issues:
 
 ```bash
-npm run format: check .
+npm run format:check
 ```
 
 To fix formatting issues:
 
 ```bash
-npx prettier format .
+npm run format
 ```
 
 > Prettier is also integrated with Husky, so staged code, config files and docs will be checked for formatting issues before every commit.
@@ -198,7 +213,7 @@ npx playwright test --ui
 ### Run a specific spec file
 
 ```bash
-npx playwright test tests/<file-name>.spec.ts
+npx playwright test tests/e2e/<file-name>.spec.ts
 ```
 
 ### Run tests matching a title
@@ -295,6 +310,8 @@ npx playwright test --update-snapshots
 - Code linting with ESLint
 - Pre-commit hooks with Husky
 - Code formatting with Prettier
+- Environment variable management with `.env` and `dotenv`
+- Authentication state management with `storageState` and `.auth/`
 
 ---
 

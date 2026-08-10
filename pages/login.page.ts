@@ -29,10 +29,27 @@ export class LoginPage {
     }
     await this.emailInput.fill(email);
 
+    // await test.step(
+    //   'Enter password',
+    //   async () => {
+    //     await this.passwordInput.fill(password);
+    //   },
+    //   { box: true }
+    // );
+
     await test.step(
       'Enter password',
       async () => {
-        await this.passwordInput.fill(password);
+        await this.passwordInput.evaluate((input: HTMLInputElement, val: string) => {
+          // Access React's native value setter to bypass internal state overrides
+          const nativeSetter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype,
+            'value'
+          )?.set;
+
+          nativeSetter?.call(input, val);
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }, password);
       },
       { box: true }
     );

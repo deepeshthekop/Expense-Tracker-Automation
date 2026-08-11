@@ -29,14 +29,6 @@ export class LoginPage {
     }
     await this.emailInput.fill(email);
 
-    // await test.step(
-    //   'Enter password',
-    //   async () => {
-    //     await this.passwordInput.fill(password);
-    //   },
-    //   { box: true }
-    // );
-
     await test.step(
       'Enter password',
       async () => {

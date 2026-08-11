@@ -1,20 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { NavComponent } from '../../pages/nav.component';
+import { test, expect } from '../../fixtures/page-fixtures';
 
 test.describe('Logout Functionality', () => {
-  let nav: NavComponent;
-
-  test.beforeEach(async ({ page }) => {
-    nav = new NavComponent(page);
-
-    await nav.navigateToHome();
+  test.beforeEach(async ({ navComponent }) => {
+    await navComponent.navigateToHome();
   });
 
-  test('User can log out', async ({ page }) => {
-    // Perform logout
-    await nav.logout();
-
-    // Verify redirection to the login page
+  test('User can log out', async ({ navComponent, page }) => {
+    await navComponent.logout();
     await expect(page).toHaveURL(/auth\/signin/);
   });
 });

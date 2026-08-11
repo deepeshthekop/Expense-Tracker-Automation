@@ -1,0 +1,161 @@
+{
+  "info": {
+    "_postman_id": "8d4858a6-6c9f-499e-a3ae-7772dae6732e",
+    "name": "Expense-Tracker",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25449788"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "Fetch CSRF Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse the response JSON",
+                  "const responseData = pm.response.json();",
+                  "",
+                  "// Save the csrfToken into your environment variables automatically",
+                  "if (responseData.csrfToken) {",
+                  "    pm.environment.set(\"csrfToken\", responseData.csrfToken);",
+                  "    console.log(\"CSRF Token saved:\", responseData.csrfToken);",
+                  "}",
+                  "",
+                  "// Basic assertion",
+                  "pm.test(\"Fetched CSRF Token Successfully\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(responseData.csrfToken).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/auth/csrf",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "auth", "csrf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Login Request Successful\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Redirect URL is present\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.url).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "csrfToken",
+                  "value": "{{csrfToken}}",
+                  "type": "text",
+                  "uuid": "3c7681c3-adc7-4f9e-82ab-ceb8fd1b93c3"
+                },
+                {
+                  "key": "email",
+                  "value": "{{test_user_email}}",
+                  "type": "text",
+                  "uuid": "b434548c-2a06-4171-ae6f-9968ebea2370"
+                },
+                {
+                  "key": "password",
+                  "value": "{{test_user_password}}",
+                  "type": "text",
+                  "uuid": "9831678f-4c12-4972-ba34-540b19c988c1"
+                },
+                {
+                  "key": "json",
+                  "value": "true",
+                  "type": "text",
+                  "uuid": "a4541a1e-a92c-4329-af07-d0dfbe3258fa"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/auth/callback/credentials",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "auth", "callback", "credentials"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Account Name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains expected user name\", function () {",
+                  "    pm.expect(pm.response.text()).to.include(pm.environment.get(\"test_account_name\")); ",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/main/account",
+              "host": ["{{baseURL}}"],
+              "path": ["main", "account"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

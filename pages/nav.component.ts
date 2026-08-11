@@ -19,6 +19,7 @@ export class NavComponent {
     this.budgetsLink = page.getByRole('link', { name: 'Budgets' });
     // Refactored from brittle page.locator('img') to semantic layout roles
     this.userAvatarMenu = page.getByTestId('user-menu-dropdown');
+    this.accountLink = page.getByRole('menuitem', { name: 'Account' });
     this.signOutLink = page.getByRole('menuitem', { name: 'Sign Out' });
     this.themeChanger = page.getByTestId('theme-toggle');
   }

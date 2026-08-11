@@ -1,34 +1,26 @@
-import { test, expect } from '@playwright/test';
-import { NavComponent } from '../../pages/nav.component';
-import { DashboardPage } from '../../pages/dashboard.page';
+import { test, expect } from '../../fixtures/page-fixtures';
 
 test.describe('Dashboard Operations', () => {
-  let nav: NavComponent;
-  let dashboardPage: DashboardPage;
-
-  test.beforeEach(async ({ page }) => {
-    nav = new NavComponent(page);
-    dashboardPage = new DashboardPage(page);
-
-    await nav.navigateToHome();
+  test.beforeEach(async ({ navComponent }) => {
+    await navComponent.navigateToHome();
   });
 
-  test('User can see navigation links', async ({}) => {
-    await nav.verifyNavLinksVisible();
+  test('User can see navigation links', async ({ navComponent }) => {
+    await navComponent.verifyNavLinksVisible();
   });
 
-  test('User can view dashboard components', async ({}) => {
+  test('User can view dashboard components', async ({ dashboardPage }) => {
     await dashboardPage.verifyDashboardComponentsVisible();
   });
 
-  test('User can navigate sidebar sections smoothly', async ({ page }) => {
-    await nav.goToExpenses();
+  test('User can navigate sidebar sections smoothly', async ({ navComponent, page }) => {
+    await navComponent.goToExpenses();
     await expect(page).toHaveURL(/.*expenses/);
 
-    await nav.goToBudgets();
+    await navComponent.goToBudgets();
     await expect(page).toHaveURL(/.*budgets/);
 
-    await nav.goToDashboard();
+    await navComponent.goToDashboard();
     await expect(page).toHaveURL(/main/);
   });
 });

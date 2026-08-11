@@ -13,12 +13,12 @@ Automated UI testing framework for an Expense Tracker web application using **Pl
 This repository contains end-to-end automation tests for an Expense Tracker web app.  
 The framework is designed to be scalable and maintainable through a separation of concerns:
 
-- Test scenarios in spec files
-- Page behavior in Page Objects
-- Reusable components for shared UI interactions
+- Test scenarios in spec files (UI & direct API endpoints)
+- Page behavior encapsulated in Page Objects
+- Dependency injection managed via Custom Page Fixtures
+- Shared UI components for common navigation
 - Authentication state management for faster test execution
-- ESLint and Prettier for code quality and formatting
-- Husky for pre-commit hooks and Git workflow enforcement
+- Code quality enforcement via ESLint, Prettier, and Husky Git hooks
 
 ---
 
@@ -26,7 +26,7 @@ The framework is designed to be scalable and maintainable through a separation o
 
 - **Language:** TypeScript
 - **Automation Tool:** Playwright
-- **Pattern:** Page Object Model (POM)
+- **Pattern:** Page Object Model (POM) & Custom Fixtures
 - **Runtime:** Node.js
 
 ---
@@ -39,12 +39,16 @@ Expense-Tracker-Automation/
 │   └── user.json                      # Injected cookies & localStorage state
 ├── .github/workflows/playwright.yml   # CI workflow
 ├── .husky/                            # Git hooks managed by Husky
+├── fixtures/                          # Custom Playwright fixtures
+│   ├── page-fixtures.ts
 ├── pages/                             # Page Objects and UI components
 │   ├── dashboard.page.ts
 │   ├── login.page.ts
 │   └── nav.component.ts
 ├── tests/                             # Test specs and setup scripts
 │   ├── auth.setup.ts                  # One-time login setup project script
+│   ├── api/                           # API test specs
+│   │   └── account-api.spec.ts
 │   └── e2e/                           # End-to-end test specs
 │       ├── dashboard.spec.ts
 │       ├── login.spec.ts
@@ -127,6 +131,7 @@ Required environment variables in your `.env` file (at project root):
 
 - `TEST_USER_EMAIL`
 - `TEST_USER_PASSWORD`
+- `TEST_USER_NAME`
 
 ### Base URL & Global Authentication (`storageState`)
 
@@ -136,9 +141,10 @@ The Playwright `baseURL` is configured in `playwright.config.ts`:
 
 Instead of running a full UI login before every test, this framework uses Playwright's **Setup Dependencies** and `storageState`:
 
-1. The `setup` project runs `tests/auth.setup.ts` before any browser tests.
-2. It performs UI login once using environment variables and exports the session context to `.auth/user.json`.
+1. The `setup` project runs `tests/auth.setup.ts` once before any test runs.
+2. It performs UI login once using environment credentials and saves the authenticated state to `.auth/user.json`.
 3. Test projects (e.g., `chromium`) automatically inherit `.auth/user.json` to launch pre-authenticated browser instances.
+4. Native API requests automatically inherit session cookies from `.auth/user.json` to hit protected API endpoints directly.
 
 > **Security Note:** Session files contain sensitive live tokens. `.auth/` and `.env` are listed in `.gitignore` and should never be committed to source control.
 
@@ -266,6 +272,7 @@ Required GitHub secrets for CI:
 
 - `TEST_USER_EMAIL`
 - `TEST_USER_PASSWORD`
+- `TEST_USER_NAME`
 
 ---
 
@@ -276,6 +283,7 @@ The current E2E suite includes:
 - Login flow
 - Logout flow
 - Dashboard validation flow
+- Backend Authentication Session API validation `/api/auth/session`
 
 As the suite grows, add additional coverage for expense and budget workflows.
 

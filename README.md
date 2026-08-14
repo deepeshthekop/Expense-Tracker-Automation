@@ -241,13 +241,13 @@ npx playwright test -g "should create a new expense"
 npx playwright test --project=chromium
 ```
 
-# Debug test execution
+### Debug test execution
 
 ```bash
 npx playwright test --debug
 ```
 
-# Open Playwright inspector/codegen
+### Open Playwright inspector/codegen
 
 ```bash
 npx playwright codegen <APP_URL>

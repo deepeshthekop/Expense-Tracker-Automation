@@ -4,14 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/language-typescript-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-Automated UI testing framework for an Expense Tracker web application using **Playwright**, **TypeScript**, and the **Page Object Model (POM)** pattern.
-
----
-
-## About the Project
-
-This repository contains end-to-end automation tests for an Expense Tracker web app.  
-The framework is designed to be scalable and maintainable through a separation of concerns:
+Automated UI and API testing framework for an Expense Tracker web application using **Playwright**, **TypeScript**, and the **Page Object Model (POM)** pattern.
 
 - Test scenarios in spec files (UI & direct API endpoints)
 - Page behavior encapsulated in Page Objects
@@ -35,24 +28,15 @@ The framework is designed to be scalable and maintainable through a separation o
 
 ```
 Expense-Tracker-Automation/
-├── .auth/                             # Auto-generated session state (ignored by git)
-│   └── user.json                      # Injected cookies & localStorage state
+├── .auth/user.json                    # Auto-generated session state
 ├── .github/workflows/playwright.yml   # CI workflow
 ├── .husky/                            # Git hooks managed by Husky
 ├── fixtures/                          # Custom Playwright fixtures
-│   ├── page-fixtures.ts
 ├── pages/                             # Page Objects and UI components
-│   ├── dashboard.page.ts
-│   ├── login.page.ts
-│   └── nav.component.ts
 ├── tests/                             # Test specs and setup scripts
 │   ├── auth.setup.ts                  # One-time login setup project script
 │   ├── api/                           # API test specs
-│   │   └── account-api.spec.ts
 │   └── e2e/                           # End-to-end test specs
-│       ├── dashboard.spec.ts
-│       ├── login.spec.ts
-│       └── logout.spec.ts
 ├── playwright.config.ts               # Playwright configuration
 ├── package.json                       # Dependencies and project metadata
 ├── eslint.config.mjs                  # ESLint configuration
@@ -150,6 +134,29 @@ Instead of running a full UI login before every test, this framework uses Playwr
 
 ---
 
+## CI with GitHub Actions
+
+CI is already configured in:
+
+- `.github/workflows/playwright.yml`
+
+Current workflow behavior:
+
+- Runs on push and pull request to `main` and `master`
+- Uses `actions/setup-node@v4` with `node-version: lts/*`
+- Installs dependencies with `npm ci`
+- Installs Playwright browsers with dependencies
+- Runs `npx playwright test`
+- Uploads Playwright HTML report artifact (`retention-days: 30`)
+
+Required GitHub secrets for CI:
+
+- `TEST_USER_EMAIL`
+- `TEST_USER_PASSWORD`
+- `TEST_USER_NAME`
+
+---
+
 ## Code Quality
 
 This project uses **ESLint** for code linting and **Husky** for managing Git hooks.
@@ -234,6 +241,18 @@ npx playwright test -g "should create a new expense"
 npx playwright test --project=chromium
 ```
 
+# Debug test execution
+
+```bash
+npx playwright test --debug
+```
+
+# Open Playwright inspector/codegen
+
+```bash
+npx playwright codegen <APP_URL>
+```
+
 ---
 
 ## Test Reports
@@ -253,60 +272,6 @@ npx playwright test --debug
 
 ---
 
-## CI with GitHub Actions
-
-CI is already configured in:
-
-- `.github/workflows/playwright.yml`
-
-Current workflow behavior:
-
-- Runs on push and pull request to `main` and `master`
-- Uses `actions/setup-node@v4` with `node-version: lts/*`
-- Installs dependencies with `npm ci`
-- Installs Playwright browsers with dependencies
-- Runs `npx playwright test`
-- Uploads Playwright HTML report artifact (`retention-days: 30`)
-
-Required GitHub secrets for CI:
-
-- `TEST_USER_EMAIL`
-- `TEST_USER_PASSWORD`
-- `TEST_USER_NAME`
-
----
-
-## Current Test Coverage
-
-The current E2E suite includes:
-
-- Login flow
-- Logout flow
-- Dashboard validation flow
-- Backend Authentication Session API validation `/api/auth/session`
-
-As the suite grows, add additional coverage for expense and budget workflows.
-
----
-
-## Useful Commands
-
-```bash
-# Run all tests
-npx playwright test
-
-# Debug test execution
-npx playwright test --debug
-
-# Open Playwright inspector/codegen
-npx playwright codegen <APP_URL>
-
-# Update snapshots (if using visual assertions)
-npx playwright test --update-snapshots
-```
-
----
-
 ## Best Practices Followed
 
 - POM for modularity and readability
@@ -320,44 +285,6 @@ npx playwright test --update-snapshots
 - Code formatting with Prettier
 - Environment variable management with `.env` and `dotenv`
 - Authentication state management with `storageState` and `.auth/`
-
----
-
-## Troubleshooting
-
-### Browser executable issues
-
-```bash
-npx playwright install
-```
-
-### Flaky tests
-
-- Improve selector strategy
-- Avoid `waitForTimeout`
-- Prefer built-in Playwright waiting and assertions
-- Use traces/videos/screenshots for root-cause analysis
-
-### Environment mismatch
-
-- Validate `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` values
-- Confirm target environment is reachable
-- Confirm `.env` values are loaded in test runtime
-- Re-check any test account constraints in the app
-
-### Husky Hook Issues
-
-If pre-commit hooks are not running:
-
-1. Ensure Husky is installed: `npx husky install`.
-2. Verify the `pre-commit` file exists in `.husky/`.
-
-### Prettier Issues
-
-If Prettier is not running as part of the pre-commit hook:
-
-1. Ensure Husky is installed: `npx husky install`.
-2. Verify the `pre-commit` file in `.husky/` includes a Prettier check.
 
 ---
 

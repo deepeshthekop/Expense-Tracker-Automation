@@ -156,6 +156,183 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "expenses",
+      "item": [
+        {
+          "name": "Fetch User ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse the response JSON",
+                  "const responseData = pm.response.json();",
+                  "",
+                  "// Save the user id into your environment variables automatically",
+                  "if (responseData.user.id) {",
+                  "    pm.environment.set(\"test_user_id\", responseData.user.id);",
+                  "    console.log(\"User ID saved:\", responseData.user.id);",
+                  "}",
+                  "",
+                  "// Basic assertion",
+                  "pm.test(\"Fetched User ID Successfully\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(responseData.user.id).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/auth/session",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "auth", "session"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Expense",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body contains an id, amount and title\", function () {",
+                  "    pm.expect(responseData).to.have.property(\"id\"); //expense id",
+                  "    pm.expect(responseData.id).to.be.a(\"string\").and.not.empty;",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property(\"amount\"); // expense amount",
+                  "    pm.expect(responseData.amount).to.eql(4);",
+                  "",
+                  "    pm.expect(responseData).to.have.property(\"title\"); // expense title",
+                  "    pm.expect(responseData.title).to.eql(\"Coffee\");",
+                  "});",
+                  "",
+                  "// Save the expense id into your environment variables automatically",
+                  "if (responseData.id) {",
+                  "    pm.environment.set(\"test_expense_id\", responseData.id);",
+                  "    console.log(\"Expense ID saved:\", responseData.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"title\": \"Coffee\",\n    \"amount\": 4,\n    \"category\": \"DINING\",\n    \"date\": \"2026-08-14\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/expenses",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "expenses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Expense",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200 or 204\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"title\": \"Coffee\",\n    \"amount\": 4,\n    \"category\": \"DINING\",\n    \"date\": \"2026-08-14\"\n}",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/expenses/{{test_expense_id}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "expenses", "{{test_expense_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Expense is Deleted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns 404 when trying to access or delete the deleted expense\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "// Clear the env for test_expense_id",
+                  "if (pm.response.code === 404) {",
+                  "    pm.environment.set(\"test_expense_id\", \"\");",
+                  "    console.log(\"test_expense_id value cleared from environment.\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"title\": \"Coffee\",\n    \"amount\": 4,\n    \"category\": \"DINING\",\n    \"date\": \"2026-08-14\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/expenses/{{test_expense_id}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "expenses", "{{test_expense_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

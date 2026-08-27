@@ -411,6 +411,15 @@
                 "packages": {},
                 "requests": {}
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
           ],
           "request": {
@@ -418,7 +427,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"type\": \"GROCERIES\",\n    \"capacity\": 200\n}",
+              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"type\": \"{{budget_type}}\",\n    \"capacity\": {{budget_initial_capacity}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -429,6 +438,48 @@
               "raw": "{{baseURL}}/api/budgets",
               "host": ["{{baseURL}}"],
               "path": ["api", "budgets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Budget Amount",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Budget capacity was successfully updated\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.capacity).to.eql(pm.variables.get(\"budget_updated_capacity\"));",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"{{test_budget_type}}\",\n  \"userId\": \"{{test_user_id}}\",\n  \"capacity\": {{budget_updated_capacity}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/budgets/{{test_budget_type}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "budgets", "{{test_budget_type}}"]
             }
           },
           "response": []
@@ -509,6 +560,31 @@
             }
           },
           "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "// Central configuration for all budget tests in this folder",
+              "pm.variables.set(\"budget_type\", \"GROCERIES\");",
+              "pm.variables.set(\"budget_initial_capacity\", 200);",
+              "pm.variables.set(\"budget_updated_capacity\", 250);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [""]
+          }
         }
       ]
     }

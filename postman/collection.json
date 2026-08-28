@@ -156,6 +156,437 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "expenses",
+      "item": [
+        {
+          "name": "Fetch User ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse the response JSON",
+                  "const responseData = pm.response.json();",
+                  "",
+                  "// Save the user id into your environment variables automatically",
+                  "if (responseData.user.id) {",
+                  "    pm.environment.set(\"test_user_id\", responseData.user.id);",
+                  "    console.log(\"User ID saved:\", responseData.user.id);",
+                  "}",
+                  "",
+                  "// Basic assertion",
+                  "pm.test(\"Fetched User ID Successfully\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(responseData.user.id).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/auth/session",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "auth", "session"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Expense",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body contains an id, amount and title\", function () {",
+                  "    pm.expect(responseData).to.have.property(\"id\"); //expense id",
+                  "    pm.expect(responseData.id).to.be.a(\"string\").and.not.empty;",
+                  "    ",
+                  "    pm.expect(responseData).to.have.property(\"amount\"); // expense amount",
+                  "    pm.expect(responseData.amount).to.eql(4);",
+                  "",
+                  "    pm.expect(responseData).to.have.property(\"title\"); // expense title",
+                  "    pm.expect(responseData.title).to.eql(\"Coffee\");",
+                  "});",
+                  "",
+                  "// Save the expense id into your environment variables automatically",
+                  "if (responseData.id) {",
+                  "    pm.environment.set(\"test_expense_id\", responseData.id);",
+                  "    console.log(\"Expense ID saved:\", responseData.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"title\": \"Coffee\",\n    \"amount\": 4,\n    \"category\": \"DINING\",\n    \"date\": \"2026-08-14\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/expenses",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "expenses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Expense",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200 or 204\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"title\": \"Coffee\",\n    \"amount\": 4,\n    \"category\": \"DINING\",\n    \"date\": \"2026-08-14\"\n}",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/expenses/{{test_expense_id}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "expenses", "{{test_expense_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Expense is Deleted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns 404 when trying to access or delete the deleted expense\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "// Clear the env for test_expense_id",
+                  "if (pm.response.code === 404) {",
+                  "    pm.environment.set(\"test_expense_id\", \"\");",
+                  "    console.log(\"test_expense_id value cleared from environment.\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"title\": \"Coffee\",\n    \"amount\": 4,\n    \"category\": \"DINING\",\n    \"date\": \"2026-08-14\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/expenses/{{test_expense_id}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "expenses", "{{test_expense_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "budgets",
+      "item": [
+        {
+          "name": "Fetch User ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse the response JSON",
+                  "const responseData = pm.response.json();",
+                  "",
+                  "// Save the user id into your environment variables automatically",
+                  "if (responseData.user.id) {",
+                  "    pm.environment.set(\"test_user_id\", responseData.user.id);",
+                  "    console.log(\"User ID saved:\", responseData.user.id);",
+                  "}",
+                  "",
+                  "// Basic assertion",
+                  "pm.test(\"Fetched User ID Successfully\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(responseData.user.id).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/auth/session",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "auth", "session"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Budget",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const requestData = JSON.parse(pm.request.body.raw);",
+                  "console.log(requestData);",
+                  "const responseData = pm.response.json();",
+                  "console.log(responseData);",
+                  "",
+                  "pm.test(\"Budget created successfully\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body contains a type and capacity\", function() {",
+                  "    pm.expect(responseData).to.have.property(\"type\");",
+                  "    pm.expect(responseData.type).to.be.eql(requestData.type);",
+                  "",
+                  "    pm.expect(responseData).to.have.property(\"capacity\");",
+                  "    pm.expect(responseData.capacity).to.be.eql(requestData.capacity);",
+                  "});",
+                  "",
+                  "// Save the budget type into your environment variables automatically",
+                  "// We are saving the budget TYPE instead of ID bacause every budget type here is unique. Hence, we have no id associated with the budget.",
+                  "if (responseData.type) {",
+                  "    pm.environment.set(\"test_budget_type\", responseData.type);",
+                  "    console.log(\"Budget type saved\", requestData.type);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": \"{{test_user_id}}\",\n    \"type\": \"{{budget_type}}\",\n    \"capacity\": {{budget_initial_capacity}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/budgets",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "budgets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Budget Amount",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Budget capacity was successfully updated\", function () {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.expect(responseData.capacity).to.eql(pm.variables.get(\"budget_updated_capacity\"));",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"{{test_budget_type}}\",\n  \"userId\": \"{{test_user_id}}\",\n  \"capacity\": {{budget_updated_capacity}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/budgets/{{test_budget_type}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "budgets", "{{test_budget_type}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Budget",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "pm.test(\"Budget deleted successfully\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"{{test_budget_type}}\",\n  \"userId\": \"{{test_user_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/budgets/{{test_budget_type}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "budgets", "{{test_budget_type}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Budget is Deleted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns 404 when trying to access or delete the deleted budget\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "// Clear the env for test_expense_id",
+                  "if (pm.response.code === 404) {",
+                  "    pm.environment.set(\"test_budget_type\", \"\");",
+                  "    console.log(\"test_budget_type value cleared from environment.\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"{{test_budget_type}}\",\n  \"userId\": \"{{test_user_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/budgets/{{test_budget_type}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "budgets", "{{test_budget_type}}"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "// Central configuration for all budget tests in this folder",
+              "pm.variables.set(\"budget_type\", \"GROCERIES\");",
+              "pm.variables.set(\"budget_initial_capacity\", 200);",
+              "pm.variables.set(\"budget_updated_capacity\", 250);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [""]
+          }
+        }
+      ]
     }
   ]
 }
